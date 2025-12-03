@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  username String     @id @db.VarChar(100)
+  password String     @db.VarChar(100)
+  name     String     @db.VarChar(100)
+  token    String?    @db.VarChar(100)
+  picture  String?    @db.VarChar(255)
+  Kegiatan Kegiatan[]
+
+  @@map("users")
+}
+
+/**
+ * ==============
+ * KEGIATAN (SPLIT BILL)
+ * ===============
+ */
+
+model Kegiatan {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(100)
+  event_date DateTime @default(now())
+  location   String?  @db.VarChar(100)
+
+  username String
+  user     Users  @relation(fields: [username], references: [username])
+
+  participants Participants[] // 1 kegiatan punya banyak participants
+
+  @@map("kegiatan")
+}
+
+/**
+ * ==========
+ * PARTICIPANTS
+ * ===========
+ */
+
+model Participants {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(100)
+  kegiatanId Int      @db.Integer
+  kegiatan   Kegiatan @relation(fields: [kegiatanId], references: [id])
+  cost_total Int?     @default(0) @db.Integer
+  items      Items[] // 1 participant punya banyak items
+
+  @@map("participants")
+}
+
+/**
+ * =====
+ * ITEMS
+ * =====
+ */
+
+model Items {
+  id        Int    @id @default(autoincrement())
+  item_name String @db.VarChar(100)
+  amount    Int    @default(1) @db.Integer
+  cost      Int    @db.Integer
+
+  participantId Int
+  participant   Participants @relation(fields: [participantId], references: [id])
+
+  @@map("items")
+}
