@@ -1,17 +1,18 @@
 import Joi from "joi";
 
 const addKegiatanValidasi = Joi.object({
-    eventNames: Joi.string().required().min(5).max(100),
-    eventDate: Joi.date().required(),
-    location: Joi.string().required().min(5).max(100)
+    name: Joi.string().required().min(1).max(100),
+    event_date: Joi.date().required().iso(),
+    location: Joi.string().required().min(5).max(100),
+    taxPercentage: Joi.number().required()
 })
 
 const addParticipantsValidasi = Joi.object({
-    username: Joi.string().required().min(5).max(100)
+    name: Joi.string().required().min(1).max(100)
 })
 
 const addItemValidasi = Joi.object({
-    itemName: Joi.string().required().min(5).max(100),
+    item_name: Joi.string().required().min(1).max(100),
     cost: Joi.number().required(),
     amount: Joi.number().required()
 })

@@ -10,29 +10,28 @@ import {ResponseError} from "../error/response-error.js";
 import {updateParticipantCost} from "../../test/util.js";
 
 const createKegiatan = async (user, request) => {
-    const kegiatan = validate(addKegiatanValidasi, request)
-    kegiatan.username = user.username;
+    if (request.event_date) {
+        // const [day, month, year] = request.event_date.split("-");
+        request.event_date = new Date(request.event_date).toISOString();
+    }
+
+    request.taxPercentage = parseFloat(request.taxPercentage);
+    const validRequest = validate(addKegiatanValidasi, request)
+    validRequest.username = user.username;
 
     return prismaClient.kegiatan.create({
-        data: kegiatan,
-        select: {
-            id: true,
-            eventNames: true,
-            eventDate: true,
-            location: true,
-            username: true,
-        }
+        data: validRequest
     })
 }
 
-const addParticipant = async (name,kegiatanId) => {
-    const participant = validate(addParticipantsValidasi, name)
+const addParticipant = async (request,kegiatanId) => {
+    const participant = validate(addParticipantsValidasi, request)
     const kegiatan_id = validate(getParticipantValidasi, kegiatanId)
 
     //count dulu kegiatan nya ada ga
     const count = await prismaClient.kegiatan.count({
         where:{
-            id: kegiatanId
+            id: kegiatan_id
         }
     })
     if (!count){
@@ -49,16 +48,15 @@ const addParticipant = async (name,kegiatanId) => {
 }
 
 
-const getParticipant = async (kegiatanId,participantId) => {
+const getAllParticipant = async (kegiatanId) => {
 
-    const participant = await prismaClient.participants.findFirst({
+
+    const participant = await prismaClient.participants.findMany({
         where:{
-            id: participantId,
             kegiatanId: kegiatanId
         },
-        select: {
-            name: true,
-            cost_total: true,
+        include : {
+            items: true
         }
     })
     if (!participant){
@@ -67,7 +65,7 @@ const getParticipant = async (kegiatanId,participantId) => {
     return participant;
 }
 
-const addItem = async (kegiatanId, request, participantId) => {
+const addItem = async (request, participantId) => {
     //validasi item nya
     const validItem = validate(addItemValidasi, request)
     validItem.participantId = participantId;
@@ -75,7 +73,7 @@ const addItem = async (kegiatanId, request, participantId) => {
     const items = await prismaClient.items.create({
         data: validItem,
         select: {
-            itemName: true,
+            item_name: true,
             cost: true,
             amount: true,
         }
@@ -86,13 +84,17 @@ const addItem = async (kegiatanId, request, participantId) => {
     return items;
 }
 
-const getItems = async (participantId) => {
+const getAllItems = async (participantId) => {
     return prismaClient.items.findMany({
-        where:{
+        where: {
             participantId: participantId
+        },
+        include: {
+            participant: true
         }
     })
 }
+
 
 const deleteItem = async (itemId) => {
     return prismaClient.items.delete({
@@ -108,6 +110,8 @@ const deleteItem = async (itemId) => {
 export default {
     createKegiatan,
     addParticipant,
-    getParticipant,
-    addItem
+    getAllParticipant,
+    addItem,
+    getAllItems,
+    deleteItem
 }

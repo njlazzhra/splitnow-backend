@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "kegiatan" ALTER COLUMN "event_date" DROP DEFAULT,
+ALTER COLUMN "event_date" SET DATA TYPE VARCHAR(100);

@@ -14,11 +14,12 @@ datasource db {
 }
 
 model Users {
-  username String     @id @db.VarChar(100)
-  password String     @db.VarChar(100)
-  name     String     @db.VarChar(100)
-  token    String?    @db.VarChar(100)
-  picture  String?    @db.VarChar(255)
+  username String  @id @db.VarChar(100)
+  password String  @db.VarChar(100)
+  name     String  @db.VarChar(100)
+  token    String? @db.VarChar(100)
+  picture  String? @db.VarChar(255)
+
   Kegiatan Kegiatan[]
 
   @@map("users")
@@ -31,10 +32,11 @@ model Users {
  */
 
 model Kegiatan {
-  id         Int      @id @default(autoincrement())
-  name       String   @db.VarChar(100)
-  event_date DateTime @default(now())
-  location   String?  @db.VarChar(100)
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(100)
+  event_date    DateTime @default(now())
+  location      String?  @db.VarChar(100)
+  taxPercentage Float?   @default(0)
 
   username String
   user     Users  @relation(fields: [username], references: [username])

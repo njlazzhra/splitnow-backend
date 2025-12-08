@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import {googleAuthRouter} from "../route/googleAuth-router.js";
 import cookieParser from 'cookie-parser';
 import {publicRouter} from "../route/public-api.js";
+import {userRouter} from "../route/api.js";
 
 
 export const web = express();
@@ -15,6 +16,6 @@ dotenv.config();
 web.use(cors());
 web.use(googleAuthRouter)
 web.use(publicRouter)
-// web.use(userRouter)
+web.use(userRouter)
 
 web.use(errorMiddleware)

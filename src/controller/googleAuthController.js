@@ -42,8 +42,9 @@ const googleAuthCallback = async (req, res, next) => {
                 data: {
                     username : email,
                     name : name,
-                    picture : picture, // ini kalo ada dan kita harus tanya dulu
-                    token : token
+                    token : token,
+                    picture : picture // ini kalo ada dan kita harus tanya dulu
+
                 }
             })
         }
