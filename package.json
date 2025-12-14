@@ -4,8 +4,8 @@
   "description": "ini backend untuk backend untuk web split bill dengan jest dan prisma orm",
   "main": "src/main.js",
   "scripts": {
-    "build": "prisma generate",
     "start": "node src/main.js",
+    "postinstall": "prisma generate",
     "test": "jest -i"
   },
   "jest": {
