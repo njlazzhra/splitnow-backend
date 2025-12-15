@@ -46,13 +46,13 @@ const login = async (request)=>{
         }
     });
 
-    if(!user){
-        throw new ResponseError(401,"User does not exist");
+    if (!user) {
+        throw new ResponseError(401, "Username atau password salah");
     }
 
     const isPasswordCorrect= await bcrypt.compare(loginRequest.password, user.password)
-    if(!isPasswordCorrect){
-        throw new ResponseError(401,"Password incorrect")
+    if (!isPasswordCorrect) {
+        throw new ResponseError(401, "Username atau password salah");
     }
 
     const token = uuid().toString();
