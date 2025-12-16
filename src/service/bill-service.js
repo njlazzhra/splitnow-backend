@@ -7,7 +7,7 @@ import {
 } from "../validation/bill-validation.js";
 import {prismaClient} from "../application/database.js";
 import {ResponseError} from "../error/response-error.js";
-import {updateParticipantCost} from "../../test/util.js";
+import {updateParticipantCost} from "../utility/participant-util.js";
 
 const createKegiatan = async (user, request) => {
     if (request.event_date) {

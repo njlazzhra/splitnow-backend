@@ -29,14 +29,15 @@ const googleAuthCallback = async (req, res, next) => {
         const { email, name, picture } = userData
 
         //cek di database
-        let user = await prismaClient.users.findMany({
+        let user = await prismaClient.users.findUnique({
             where: {
                 username: email,
             }
         })
 
+        const token = uuid().toString()
+        
         if (!user){
-            const token = uuid().toString()
             //kalo dia user gada maka kita insert ka database
              await prismaClient.users.create({
                 data: {
@@ -46,6 +47,12 @@ const googleAuthCallback = async (req, res, next) => {
                     picture : picture // ini kalo ada dan kita harus tanya dulu
 
                 }
+            })
+        } else {
+            // User sudah ada, update token untuk login baru
+            await prismaClient.users.update({
+                where: { username: email },
+                data: { token: token }
             })
         }
         res.redirect('http://localhost:5173/dashboard/splitnow') // redirect ke url front end kita
