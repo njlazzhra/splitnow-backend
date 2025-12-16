@@ -4,8 +4,6 @@
   "description": "ini backend untuk backend untuk web split bill dengan jest dan prisma orm",
   "main": "src/main.js",
   "scripts": {
-    "start": "node src/main.js",
-    "postinstall": "prisma generate",
     "test": "jest -i"
   },
   "jest": {
@@ -17,7 +15,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@prisma/client": "^6.19.1",
+    "@prisma/client": "^6.13.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
