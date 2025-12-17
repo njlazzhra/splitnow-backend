@@ -4,22 +4,22 @@ export const authMiddleware = async (req, res, next) => {
     const token = req.get("Authorization")
 
     if (!token) {
-        return res.status(401).json({
+        res.status(401).json({
             error: "Unauthorized"
         }).end()
-    }
-    
-    const user = await prismaClient.users.findFirst({
-        where: {
-            token: token
+    }else {
+        const user = await prismaClient.users.findFirst({
+            where: {
+                token: token
+            }
+        })
+        if(!user){
+            res.status(401).json({
+                error: "Unauthorized"
+            }).end()
+        }else {
+            req.user = user;
+            next();
         }
-    })
-    if(!user){
-        return res.status(401).json({
-            error: "Unauthorized"
-        }).end()
     }
-    
-    req.user = user;
-    next();
 }
